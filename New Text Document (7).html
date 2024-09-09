@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="email"],
+        input[type="tel"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .gender-group,
+        .checkbox-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .gender-group label,
+        .checkbox-group label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .submit-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Admission Form</h1>
+
+        <!-- Form -->
+        <form id="admissionForm">
+            <!-- Student Information -->
+            <div class="section">
+                <h2>Student Information</h2>
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
+
+                <label for="lastName">Last Name:</label>
+                <input type="text" id="lastName" name="lastName" required>
+
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+
+                <label>Gender:</label>
+                <div class="gender-group">
+                    <label><input type="radio" name="gender" value="Male"> Male</label>
+                    <label><input type="radio" name="gender" value="Female"> Female</label>
+                    <label><input type="radio" name="gender" value="Other"> Other</label>
+                </div>
+
+                <label for="nationality">Nationality:</label>
+                <input type="text" id="nationality" name="nationality">
+
+                <label for="Religion">Religion:</label>
+                <input type="text" id="religion" name="religion">
+            </div>
+
+            <!-- Parent/Guardian Information -->
+            <div class="section">
+                <h2>Parent/Guardian Information</h2>
+                <label for="fatherName">Father's Name:</label>
+                <input type="text" id="fatherName" name="fatherName" required>
+
+                <label for="fatherOccupation">Father's Occupation:</label>
+                <input type="text" id="fatherOccupation" name="fatherOccupation">
+
+                <label for="motherName">Mother's Name:</label>
+                <input type="text" id="motherName" name="motherName">
+
+                <label for="motherOccupation">Mother's Occupation:</label>
+                <input type="text" id="motherOccupation" name="motherOccupation">
+
+                <label for="address">Home Address:</label>
+                <input type="text" id="address" name="address" required>
+
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" required>
+
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <!-- Previous School Information -->
+            <div class="section">
+                <h2>Previous School Information</h2>
+                <label for="prevSchool">Name of Previous School:</label>
+                <input type="text" id="prevSchool" name="prevSchool">
+
+                <label for="schoolAddress">School Address:</label>
+                <input type="text" id="schoolAddress" name="schoolAddress">
+
+                <label for="lastGrade">Last Grade Completed:</label>
+                <input type="text" id="lastGrade" name="lastGrade">
+
+                <label for="reason">Reason for Leaving (Optional):</label>
+                <textarea id="reason" name="reason"></textarea>
+            </div>
+
+            <!-- Academic Information -->
+            <div class="section">
+                <h2>Academic Information</h2>
+                <label for="desiredGrade">Desired Grade of Admission:</label>
+                <input type="text" id="desiredGrade" name="desiredGrade">
+
+                <label for="startDate">Preferred Start Date:</label>
+                <input type="date" id="startDate" name="startDate">
+
+                <label for="honors">Any Honors or Achievements:</label>
+                <textarea id="honors" name="honors"></textarea>
+
+                <label for="activities">Extracurricular Activities:</label>
+                <textarea id="activities" name="activities"></textarea>
+            </div>
+
+            <!-- Emergency Contact Information -->
+            <div class="section">
+                <h2>Emergency Contact Information</h2>
+                <label for="emergencyName">Emergency Contact Name:</label>
+                <input type="text" id="emergencyName" name="emergencyName" required>
+
+                <label for="relationship">Relationship to Student:</label>
+                <input type="text" id="relationship" name="relationship">
+
+                <label for="emergencyPhone">Phone Number:</label>
+                <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
+            </div>
+
+           
+
+            <!-- Submit button -->
+            <button type="button" class="submit-btn" onclick="generatePDF()">Download PDF</button>
+        </form>
+    </div>
+
+     <script>
+        function generatePDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'pt');
+           const pageWidth = doc.internal.pageSize.getWidth(); // Get the page width
+            // Define fonts and styles
+            doc.setFont('helvetica');
+            doc.setFontSize(12);
+
+           let yOffset = 40;
+    const lineHeight = 20;
+
+           // Static School Information (Before Form Title)
+    const schoolInfo = {
+        "School Name": "ABC High School",
+        "School Address": "1234 Education St, City, Country",
+        "School Phone": "+1 123-456-7890"
+    };
+
+   
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'normal');
+    Object.keys(schoolInfo).forEach(key => {
+        if (yOffset > 750) { // Add new page if necessary
+            doc.addPage();
+            yOffset = 40;
+        }
+        doc.text(`${schoolInfo[key]}`, pageWidth / 2, yOffset, { align: "center" });
+        yOffset += lineHeight;
+    });
+
+
+            const title = "Admission Form";
+     
+            
+            yOffset += 10;
+            // Add a title
+            doc.setFontSize(16);
+            doc.text(title, pageWidth / 2, yOffset, { align: "center" });
+            yOffset += 5;
+
+           // Draw underline below the "Admission Form" title
+    const formTitleWidth = doc.getTextWidth(title);  // Get text width for centering the underline
+    doc.line((pageWidth / 2) - (formTitleWidth / 2), yOffset + 2, (pageWidth / 2) + (formTitleWidth / 2), yOffset + 2); // Underline
+    yOffset += 30;
+
+            // Capture form data
+            const fields = {
+                "Student Information": [
+                    ["First Name", document.getElementById('firstName').value],
+                    ["Last Name", document.getElementById('lastName').value],
+                    ["Date of Birth", document.getElementById('dob').value],
+                    ["Gender", document.querySelector('input[name="gender"]:checked') ? document.querySelector('input[name="gender"]:checked').value : ''],
+                    ["Nationality", document.getElementById('nationality').value],
+                    ["Religion", document.getElementById('religion').value]
+                ],
+                "Parent/Guardian Information": [
+                    ["Father's Name", document.getElementById('fatherName').value],
+                    ["Father's Occupation", document.getElementById('fatherOccupation').value],
+                    ["Mother's Name", document.getElementById('motherName').value],
+                    ["Mother's Occupation", document.getElementById('motherOccupation').value],
+                    ["Home Address", document.getElementById('address').value],
+                    ["Phone Number", document.getElementById('phone').value],
+                    ["Email Address", document.getElementById('email').value]
+                ],
+                "Previous School Information": [
+                    ["Name of Previous School", document.getElementById('prevSchool').value],
+                    ["School Address", document.getElementById('schoolAddress').value],
+                    ["Last Grade Completed", document.getElementById('lastGrade').value],
+                    ["Reason for Leaving", document.getElementById('reason').value]
+                ],
+                "Academic Information": [
+                    ["Desired Grade", document.getElementById('desiredGrade').value],
+                    ["Preferred Start Date", document.getElementById('startDate').value],
+                    ["Honors or Achievements", document.getElementById('honors').value],
+                    ["Extracurricular Activities", document.getElementById('activities').value]
+                ],
+                "Emergency Contact Information": [
+                    ["Emergency Contact Name", document.getElementById('emergencyName').value],
+                    ["Relationship", document.getElementById('relationship').value],
+                    ["Emergency Contact Phone", document.getElementById('emergencyPhone').value]
+                ],
+               
+            };
+
+           // Add photo space to the right
+    const photoXOffset = 400;  // X-offset to position the photo on the right
+    const photoYOffset = yOffset - 30; // Align with the Admission Form title
+
+            // Draw a rectangle for photo placement (on the right)
+    doc.rect(photoXOffset, photoYOffset + lineHeight, 100, 120); // Placeholder for photo (100x120 px)
+    doc.text("Photo", photoXOffset + 30, photoYOffset + 60 + lineHeight); // Placeholder text inside the box
+
+
+            // Loop through sections and add them to the PDF
+            Object.keys(fields).forEach(section => {
+                doc.setFontSize(14);
+                doc.setFont('helvetica', 'bold');
+                doc.text(section, 20, yOffset);
+                yOffset += lineHeight;
+
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'normal');
+
+                fields[section].forEach(([label, value]) => {
+                    if (yOffset > 750) { // If page is near the bottom, add a new page
+                        doc.addPage();
+                        yOffset = 40;
+                    }
+                    doc.text(`${label}: ${value}`, 40, yOffset);
+                    yOffset += lineHeight;
+                });
+            });
+
+if (yOffset > 750) { // Add new page if necessary
+            doc.addPage();
+            yOffset = 40;
+        }
+
+         // Declaration Section (Centered and with underline)
+    
+    const declarationText = "I hereby declare that the information provided in this form is true and correct to the best of my knowledge.";
+    const declarationText2 = "I understand that any false information may result in the rejection of this application.";
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text("Declaration", pageWidth / 2, yOffset, { align: "center" });
+
+    const declarationWidth = doc.getTextWidth("Declaration");
+    doc.line((pageWidth / 2) - (declarationWidth / 2), yOffset + 2, (pageWidth / 2) + (declarationWidth / 2), yOffset + 2); // Underline
+    yOffset += lineHeight + 10;
+
+    doc.setFont('helvetica', 'normal');
+    doc.text(declarationText, pageWidth / 2, yOffset, { align: "center" });
+    yOffset += lineHeight;
+
+    doc.text(declarationText2, pageWidth / 2, yOffset, { align: "center" });
+    yOffset += 40;
+
+    // Add signature line
+    doc.text("Signature: ____________________", 40, yOffset);
+
+            // Save the PDF
+            doc.save('admission_form.pdf');
+        }
+    </script>
+
+</body>
+</html>
