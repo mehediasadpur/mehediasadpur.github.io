@@ -12358,8 +12358,6 @@
 
 <!-- Filter Menus -->
 <div id="categoryFilterMenu" class="filter-menu"></div>
-<div id="testFilterMenu" class="filter-menu"></div>
-<div id="priceFilterMenu" class="filter-menu"></div>
 
 <script>
 const rowsPerPage = 100; // Number of rows per page
@@ -12384,19 +12382,14 @@ function closeAllFilterMenus() {
 }
 
 function filterTable() {
-    console.log("Filtering table...");
+   
     const table = document.getElementById('myTable');
     const trs = table.getElementsByTagName('tr');
     
     const categoryFilter = getCheckedValues('categoryFilterMenu');
-    const testFilter = getCheckedValues('testFilterMenu');
-    const priceFilter = getCheckedValues('priceFilterMenu');
-    const testSearch = document.getElementById('testSearch').value.toLowerCase();
     
-    console.log("Category Filter:", categoryFilter);
-    console.log("Test Filter:", testFilter);
-    console.log("Price Filter:", priceFilter);
-    console.log("Test Search:", testSearch);
+    const testSearch = document.getElementById('testSearch').value.toLowerCase();
+  
     
     filteredRows = [];
     for (let i = 1; i < trs.length; i++) {
@@ -12407,19 +12400,17 @@ function filterTable() {
         const test = tds[1].textContent.trim().toLowerCase();
         const price = tds[2].textContent.trim();
         
-        console.log(`Row ${i} - Category: ${category}, Test: ${test}, Price: ${price}`);
+       
         
         // Check if the row's values are in the filter lists
         const isCategoryValid = categoryFilter.length === 0 || categoryFilter.includes(category);
-        const isTestValid = testFilter.length === 0 || testFilter.includes(tds[1].textContent.trim());
-        const isPriceValid = priceFilter.length === 0 || priceFilter.includes(price);
+        
         const isTestSearchValid = testSearch === '' || test.includes(testSearch);
         
-        console.log(`Row ${i} isCategoryValid: ${isCategoryValid}, isTestValid: ${isTestValid}, isPriceValid: ${isPriceValid}, isTestSearchValid: ${isTestSearchValid}`);
+      
+        const shouldDisplay = isCategoryValid && isTestSearchValid;
         
-        const shouldDisplay = isCategoryValid && isTestValid && isPriceValid && isTestSearchValid;
-        
-        console.log(`Row ${i} should be displayed: ${shouldDisplay}`);
+      
         
         if (shouldDisplay) {
             filteredRows.push(trs[i]);
@@ -12511,8 +12502,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('click', closeAllFilterMenus);
 document.getElementById('categoryFilterMenu').addEventListener('click', function(event) { event.stopPropagation(); });
-document.getElementById('testFilterMenu').addEventListener('click', function(event) { event.stopPropagation(); });
-document.getElementById('priceFilterMenu').addEventListener('click', function(event) { event.stopPropagation(); });
-
 
 </script>
